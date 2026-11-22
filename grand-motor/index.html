@@ -136,11 +136,15 @@ footer{padding:28px 0 12px;font-size:13px;color:var(--muted)}
   var el = document.getElementById("status");
   if (!el) return;
   var B = null || {};
-  var t = S[today], br = B[today];
-  if (t && br && mins >= m(br[0]) && mins < m(br[1])) {
+  var t = S[today], br = B[today], y = S[keys[(d+6)%7]];
+  function end(x){ var e=m(x[1]); return e<=m(x[0]) ? e+1440 : e; }
+  if (y && end(y) > 1440 && mins < end(y) - 1440) {
+    el.textContent = "Открыто до " + y[1];
+    el.className = "chip status open";
+  } else if (t && br && mins >= m(br[0]) && mins < m(br[1])) {
     el.textContent = "Перерыв до " + br[1];
     el.className = "chip status closed";
-  } else if (t && mins >= m(t[0]) && mins < m(t[1])) {
+  } else if (t && mins >= m(t[0]) && mins < end(t)) {
     el.textContent = t[1] === "24:00" && t[0] === "00:00" ? "Открыто круглосуточно" : "Открыто до " + t[1];
     el.className = "chip status open";
   } else {
